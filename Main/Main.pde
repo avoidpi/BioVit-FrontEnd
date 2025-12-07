@@ -6,6 +6,7 @@ int x = 0;
 PImage img;
 PImage BioVit;
 PImage Scan;
+PImage Schermo;
 String extension = ".jpg"; //to make it changeable in settings
 
 int uw;
@@ -15,7 +16,7 @@ private static final int Home = 0; //i define these variables as they were a #de
 private static final int About = 1;
 private static final int Model = 2;
 
-boolean sWindow = false;
+//boolean sWindow = true;
 
 color DARK = color(0);
 color LIGHT = color(240,235,196);
@@ -37,12 +38,13 @@ void setup(){
   img = loadImage("LOGO.png");
   BioVit = loadImage("ScrittaBioVit.png");
   Scan = loadImage("frame.jpg");
+  settings.Setup();
 }
 void draw(){
   pageDraw();
   headerView.page();
   
-  if(sWindow) settings.Page();
+  settings.Page();
   if(selectdir == true){
     selectdir = false;
     selectFolder("Seleziona una cartella contenente le immagini dell'MRI;","folderSelected");
@@ -64,7 +66,11 @@ void draw(){
 
 void mouseClicked(){ //function gets called everytime there's a mouse click
   Coordinates c = new Coordinates(mouseX,mouseY);
-  if(sWindow==true){settings.click(mouseX,mouseY);}
+  if(settings.anim != height - height/64 - height/18){settings.click(mouseX,mouseY);}
+  else if(c.squareClosedRange(width/2-width/16,height/64+height - height/64 - height/18,width/2+width/16,height/6-height/10+height - height/64 - height/18)){
+    settings.open = +1;
+    settings.anim -=1;
+  }
   else if(c.squareClosedRange(0,0,width,height/7)){
     headerView.click(mouseX,mouseY);
   }

@@ -12,22 +12,23 @@ public class HeaderView{
     TextDisplay AIText = new TextDisplay(0,0,width/25,DARK,new StringBuffer("AI")); //manually the text + some properties
     TextDisplay aboutText = new TextDisplay(0,0,width/25,DARK,new StringBuffer("About"));
     
-    fill(100);
+    stroke(0);
+    fill(50);
     rect(0,0,this.coordinates.x,this.coordinates.y); //background
     image(img,width/12-height/20,height/14-height/20,height/10,height/10); //logo
     
     image(BioVit,width*2/3,this.coordinates.y/2-width/12,width/3,width/6);
     
-    fill(80);
-    if(mc.squareClosedRange(width/6,0,width/3,this.coordinates.y) && !sWindow) fill(150);
+    fill(120);
+    if(mc.squareClosedRange(width/6,0,width/3,this.coordinates.y) && (settings.anim == height - height/64 - height/18)) fill(180);
     rect(width/6,0,width/6,this.coordinates.y);
     
-    fill(80);
-    if(mc.squareClosedRange(width/3,0,width/3+width/6,this.coordinates.y) && !sWindow) fill(150);
+    fill(120);
+    if(mc.squareClosedRange(width/3,0,width/3+width/6,this.coordinates.y) && (settings.anim == height - height/64 - height/18)) fill(180);
     rect(width/3,0,width/6,this.coordinates.y);
     
-    fill(80);
-    if(mc.squareClosedRange(width/6+width/3,0,width/3+width/3,this.coordinates.y) && !sWindow) fill(150);
+    fill(120);
+    if(mc.squareClosedRange(width/6+width/3,0,width/3+width/3,this.coordinates.y) && (settings.anim == height - height/64 - height/18)) fill(180);
     rect(width/6+width/3,0,width/6,this.coordinates.y);
     
     homeText.displayCentered(width/6,0,width/3,this.coordinates.y);
