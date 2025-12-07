@@ -10,12 +10,17 @@ public class ModelView{
     this.imgLoader = new ImgLoader();
   };
   
+  void Setup(){
+  }
+  
   void page(){
+    Coordinates mc = new Coordinates(mouseX,mouseY); //track cursor pos to update color of buttons in menu
     background(240,235,196);
     surface.setTitle("BioVit-GPT - Model");
     
     fill(0);
     textSize(width/80);
+    strokeWeight(3);
     
     if(filenames.length>0 && filenames[fileindex] != null){
       imgLoader.displayFrame(width/16,height/6,height*2/3,height*2/3);
@@ -29,29 +34,32 @@ public class ModelView{
     
     
     //minus square
-    stroke(255);
-    fill(0);
+    stroke(DARK);
+    fill(DARKERGREEN);
+    if(mc.squareClosedRangeDim(width/16,height/6+min(width*2/3,height*2/3)+height/32,height/16,height/16)) fill(DARKGREEN);
     square(width/16,height/6+min(width*2/3,height*2/3)+height/32,height/16);
-    TextDisplay minus = new TextDisplay(0,0,width/25,LIGHT,new StringBuffer("-"));
+    TextDisplay minus = new TextDisplay(width/25,GREEN,new StringBuffer("-"));
     fill(255);
     minus.displayCentered(width/16,height/6+(height*2/3)+height/32,width/16+height/16,height/6+(height*2/3)+height/32+height/16);
     stroke(0);
     
      // plus square
-    stroke(255);
-    fill(0);
+    stroke(DARK);
+    fill(DARKERGREEN);
+    if(mc.squareClosedRangeDim(width/16+width/16,height/6+min(width*2/3,height*2/3)+height/32,height/16,height/16)) fill(DARKGREEN);
     square(width/16+width/16,height/6+min(width*2/3,height*2/3)+height/32,height/16);
-    TextDisplay plus = new TextDisplay(0,0,width/25,LIGHT,new StringBuffer("+"));
+    TextDisplay plus = new TextDisplay(width/25,GREEN,new StringBuffer("+"));
     fill(255);
     plus.displayCentered(width/8,height/6+(height*2/3)+height/32,width/8+height/16,height/6+(height*2/3)+height/32+height/16);
     stroke(0);
     
     //select folder button
     
-    stroke(255);
-    fill(0);
+    stroke(DARK);
+    fill(DARKERGREEN);
+    if(mc.squareClosedRangeDim(width/8 + width/16,height/6+(height*2/3)+height/32,width/16+(height*2/3)-width/8-width/16,height/16)) fill(DARKGREEN);
     rect(width/8 + width/16,height/6+(height*2/3)+height/32,width/16+(height*2/3)-width/8-width/16,height/16);
-    TextDisplay folderText  = new TextDisplay(0,0,width/50,LIGHT,new StringBuffer("Select Folder"));
+    TextDisplay folderText  = new TextDisplay(width/50,GREEN,new StringBuffer("Select Folder"));
     fill(255);
     folderText.displayCentered(width/8+width/16,height/6+(height*2/3)+height/32,width/16+(height*2/3),height/6+(height*2/3)+height/32+height/16);
     

@@ -1,4 +1,5 @@
 import java.io.FilenameFilter;
+import java.awt.*;
 
 String folderPath;
 boolean selectdir = false;
@@ -9,9 +10,6 @@ PImage Scan;
 PImage Schermo;
 String extension = ".jpg"; //to make it changeable in settings
 
-int uw;
-int uh;
-
 private static final int Home = 0; //i define these variables as they were a #define
 private static final int About = 1;
 private static final int Model = 2;
@@ -20,6 +18,9 @@ private static final int Model = 2;
 
 color DARK = color(0);
 color LIGHT = color(240,235,196);
+color GREEN =  color(50,255,50);
+color DARKGREEN = color(50,100,50);
+color DARKERGREEN = color(25,75,25);
 
 AboutView aboutView = new AboutView();
 HomeView homeView = new HomeView();
@@ -33,7 +34,7 @@ void setup(){
   size(1440,810,P2D);
   noSmooth();
   background(0);
-  surface.setResizable(false);
+  surface.setResizable(true);
   surface.setLocation(50,50);
   img = loadImage("LOGO.png");
   BioVit = loadImage("ScrittaBioVit.png");
@@ -93,6 +94,10 @@ void mouseClicked(){ //function gets called everytime there's a mouse click
 
 void windowResized(){
   delay(100);
+  settings.update();
+  if(settings.anim != 0){
+    settings.updateAnim();
+  }
 }
 
 void pageDraw(){ //Page is a number, each value corresponds to a page
