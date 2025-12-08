@@ -17,6 +17,7 @@ private static final int Model = 2;
 //boolean sWindow = true;
 
 //couple color definitions to have a palette and not go insane
+color WHITE = color(255);
 color DARK = color(0);
 color DARKGREY = color(50);
 color LIGHTDARKGREY = color(80);
