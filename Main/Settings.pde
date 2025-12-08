@@ -1,29 +1,33 @@
 public class Settings{
-  float anim = height - height/64 - height/18;
-  int open = -1;
-  float v = width/96;
-  int lastseldim = 2;
-  float buttonbordersize = width/288;
+  float anim = height - height/64 - height/18; //variable that offsets the menu to animate it
+  int open = -1; //variable that controls the animated movement and direction of it
+  float v = width/96; //velocity of the animation (per frame)
+  float buttonbordersize = width/288; //colored border of the rectangles that make up the buttons
+  
+  //text and buttons of the resolution selection part of the settings
   TextDisplay resText;
-  RectButton resButton1;
-  RectButton resButton2;
-  RectButton resButton3;
+  RectButton resButton1; //1440 x 810, default setting
+  RectButton resButton2; //1280 x 720
+  RectButton resButton3; //960 x 540
   
+  //text and buttons of the extension selection part of the settings
   TextDisplay extText;
-  RectButton extButton1;
-  RectButton extButton2;
-  RectButton extButton3;
+  RectButton extButton1; //.jpg, default setting
+  RectButton extButton2; //.png
+  RectButton extButton3; //.tga
   
+  //not found a reasonable use case for the constructor yet
   Settings(){
   }
   
   void Setup(){ //this HAS to run in Main.setup() after the size has been chosen or height and width will not have accurate dimensions
     v = width/96;
     buttonbordersize = width/288;
-    anim = height - height/64 - height/18;
-    resText = new TextDisplay(width/30,GREEN,new StringBuffer("RESOLUTION")); //res text
+    anim = height - height/64 - height/18; //starting position of the settings menu is closed
+    resText = new TextDisplay(width/30,GREEN,new StringBuffer("RESOLUTION"));
     extText = new TextDisplay(width/30,GREEN,new StringBuffer("EXTENSION"));
     
+    //set initial position, dimension, colors, border and text of the buttons
     resButton1 = new RectButton(width/8 + width/4 + width/16,height/6+height/24+(int)anim,width/10,height/12,GREEN,DARK,DARKGREEN,DARKERGREEN,buttonbordersize);
     resButton1.setText(width/50,GREEN,"1440x810");
     resButton2 = new RectButton(width/8 + width/8 + width/4 + width/16,height/6+height/24+(int)anim,width/10,height/12,GREEN,DARK,DARKGREEN,DARKERGREEN,buttonbordersize);
@@ -37,6 +41,9 @@ public class Settings{
     extButton2.setText(width/50,GREEN,".png");
     extButton3 = new RectButton(width/8 + width/4 + width/4 + width/16,height/3+height/24+(int)anim,width/10,height/12,GREEN,DARK,DARKGREEN,DARKERGREEN,buttonbordersize);
     extButton3.setText(width/50,GREEN,".tga");
+    
+    resButton1.setSelected(true); //since those are the default settings, we set the variable that show that
+    extButton1.setSelected(true);
   }
   
   void update(){ //this runs everytime the window gets resized, resizing the dimensions of buttons and text
@@ -54,17 +61,18 @@ public class Settings{
     extButton3.updateDim(width/8 + width/4 + width/4 + width/16,height/3+height/24+(int)anim,width/10,height/12,buttonbordersize,width/50);
   }
   
-  void updateAnim(){ //this runs everytime the window gets resized and the animation isn't moving (open !=0) to fix a small bug with the position of the settings window
-    if(open == -1){
-      anim = height - height/64 - height/18;
+  void updateAnim(){ //this runs everytime the window gets resized and the animation is moving (open !=0) to fix a small bug with the position of the settings window
+    if(open == -1){ //if it's closing, snap the menu on closed pos
+      anim = height - height/64 - height/18; 
     }
-    if(open == 1){
+    if(open == 1){ //if it's opening, snap it to open pos
       anim = 0;
     }
   }
 
   void Page(){
-    strokeWeight(width/480);
+    
+    //animation of the settings screen
     if(open == 1){
       anim = anim-v;
       if(anim <= 0){
@@ -79,11 +87,18 @@ public class Settings{
         open = 0;
       }
     }
+    
+    if(anim >= height - height/64 - height/18){ //fix for a possible edge case
+      anim = height - height/64 - height/18; //it shouldn't be possible to resize while the settings are closed but better safe than sorry
+    }
+    
+    //setting screen (minus the buttons and text)
+    strokeWeight(width/480);
     stroke(0);
-    fill(200,195,156);
-    rect(width/2-width/16,height/64+anim,width/8,height/8,width/64); //frame of the settings screen
-    fill(240,235,196);
-    rect(width/8-width/20,height/6-height/10+anim,width/2 + width/4 + width/10,height/2 + height/4 + width/8,width/32); //tab to open/close it
+    fill(LESSLIGHT);
+    rect(width/2-width/16,height/64+anim,width/8,height/8,width/64); //tab to open/close
+    fill(LIGHT);
+    rect(width/8-width/20,height/6-height/10+anim,width/2 + width/4 + width/10,height/2 + height/4 + width/8,width/32); //frame of the settings screen
     fill(DARK);
     rect(width/8,height/6+anim,width/2 + width/4,height/2 + height/4,width/64); //black screen of the settings screen
     stroke(0);
@@ -104,13 +119,16 @@ public class Settings{
   }
 
   void click(int px,int py){
-    Coordinates pc = new Coordinates(px,py);
+    Coordinates pc = new Coordinates(px,py);//gets mouse pos from onClick() in main
     if(pc.squareClosedRange(width/2-width/16,height/64+(int)anim,width/2+width/16,height/6-height/10+(int)anim)){
-      if(open!=0) open = open*(-1);
+      if(open!=0) open = open*(-1); //tab to open/close, works even if the window is in animation cycle
       else if(anim == 0){open = -1;}
       else open = 1;
     }
     
+    //asks every button instance if the coordinates are inside their boundaries
+    //if yes, does its thing ang sets setSelected to display the fact the button was the last selected
+    //so for example, if you selected .jpg you know that's how it's currently set
     if(resButton1.isClicked(pc)){
       surface.setSize(1440,810);
       surface.setLocation(0,0);

@@ -6,15 +6,35 @@ public class ModelView{
   String tmpfp = "random";
   int fileindex = 0;
   
+  float buttonbordersize;
+  
+  RectButton plusButton;
+  RectButton minusButton;
+  RectButton selectFolderButton;
+  
   ModelView(){ //constructor
     this.imgLoader = new ImgLoader();
   };
   
-  void Setup(){
+  void Setup(){ //called in Main.setup()
+    buttonbordersize = width/288;
+    plusButton = new RectButton(width/16+width/16,height/6+min(width*2/3,height*2/3)+height/32,height/16,height/16,DARK,DARKERGREEN,DARKGREEN,DARKERGREEN,buttonbordersize);
+    plusButton.setText(width/25,GREEN,"+");
+    minusButton = new RectButton(width/16,height/6+min(width*2/3,height*2/3)+height/32,height/16,height/16,DARK,DARKERGREEN,DARKGREEN,DARKERGREEN,buttonbordersize);
+    minusButton.setText(width/25,GREEN,"-");
+    selectFolderButton = new RectButton(width/8 + width/16,height/6+min(width*2/3,height*2/3)+height/32,width/16+(height*2/3)-width/8-width/16,height/16,DARK,DARKERGREEN,DARKGREEN,DARKERGREEN,buttonbordersize);
+    selectFolderButton.setText(width/50,GREEN,"Select Folder");
+  }
+  
+  void update(){ //called by Main.windowResized() anytime the window is resized
+    buttonbordersize = width/288;
+    plusButton.updateDim(width/16+width/16,height/6+min(width*2/3,height*2/3)+height/32,height/16,height/16,buttonbordersize,width/25);
+    minusButton.updateDim(width/16,height/6+min(width*2/3,height*2/3)+height/32,height/16,height/16,buttonbordersize,width/25);
+    selectFolderButton.updateDim(width/8 + width/16,height/6+min(width*2/3,height*2/3)+height/32,width/16+min(width*2/3,height*2/3)-width/8-width/16,height/16,buttonbordersize,width/50);
+    
   }
   
   void page(){
-    Coordinates mc = new Coordinates(mouseX,mouseY); //track cursor pos to update color of buttons in menu
     background(240,235,196);
     surface.setTitle("BioVit-GPT - Model");
     
@@ -22,17 +42,21 @@ public class ModelView{
     textSize(width/80);
     strokeWeight(3);
     
-    if(filenames.length>0 && filenames[fileindex] != null){
+    if(filenames.length>0 && filenames[fileindex] != null){ //if there are cached images (loaded after selection) show an image
       imgLoader.displayFrame(width/16,height/6,height*2/3,height*2/3);
       text("Displaying: "+filenames[fileindex],width/16,height*2/3 + height/6 + (textAscent())*1.5);
     }
-    else{
+    else{ //else display a black box instead and ask for a folder selection
       fill(0);
       square(width/16,height/6,height*2/3);
       text("Select a folder containing files ending in " + extension,width/16,height*2/3 + height/6 + (textAscent())*1.5);
     }
     
+    plusButton.Page(width/16+width/16,height/6+min(width*2/3,height*2/3)+height/32);
+    minusButton.Page(width/16,height/6+min(width*2/3,height*2/3)+height/32);
+    selectFolderButton.Page(width/8 + width/16,height/6+min(width*2/3,height*2/3)+height/32);
     
+    /*
     //minus square
     stroke(DARK);
     fill(DARKERGREEN);
@@ -63,6 +87,8 @@ public class ModelView{
     fill(255);
     folderText.displayCentered(width/8+width/16,height/6+(height*2/3)+height/32,width/16+(height*2/3),height/6+(height*2/3)+height/32+height/16);
     
+    */
+    
     if(folderPath != tmpfp && folderPath != null){
       filenames = new String[100];
       filenames = loadFilenames(folderPath);
@@ -85,16 +111,16 @@ public class ModelView{
   
   void click(int px,int py){
     Coordinates c = new Coordinates(px,py);
-    if(c.squareClosedRange(width/8+width/16,height/6+(height*2/3)+height/32,width/16+(height*2/3),height/6+(height*2/3)+height/32+height/16)){
+    if(selectFolderButton.isClicked(c)){
       selectdir = true;
     }
-    if(c.squareClosedRange(width/16,height/6+(height*2/3)+height/32,width/16+height/16,height/6+(height*2/3)+height/32+height/16) && folderPath != null){
+    if(minusButton.isClicked(c) && folderPath != null){
       if(fileindex>0)fileindex--; else fileindex = filenames.length-1;
       if(filenames.length>0)
       imgLoader.changeFrame(images[fileindex]);
       //imgLoader.changeFrameNoCache(folderPath+'/'+filenames[fileindex]);
     }
-    if(c.squareClosedRange(width/8,height/6+(height*2/3)+height/32,width/8+height/16,height/6+(height*2/3)+height/32+height/16) && folderPath != null){
+    if(plusButton.isClicked(c) && folderPath != null){
       if(fileindex<filenames.length-1)fileindex++; else fileindex = 0;
       if(filenames.length>0)
       imgLoader.changeFrame(images[fileindex]);
