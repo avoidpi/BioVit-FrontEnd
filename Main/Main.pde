@@ -76,7 +76,7 @@ void mouseClicked(){ //function gets called everytime there's a mouse click
   else if(c.squareClosedRange(width/2-width/16,height/64+height - height/64 - height/18,width/2+width/16,height/6-height/10+height - height/64 - height/18)){
     settings.open = +1; //else it checks for the settings tab and opens the settings menu
   }
-  else if(c.squareClosedRange(0,0,width,height/7)){ //else if the cursor is inside the header it sends click data to header page
+  else if(c.squareClosedRange(0,0,width,headerView.coordinates.y)){ //else if the cursor is inside the header it sends click data to header page
     headerView.click(mouseX,mouseY);
   }
   else{ //else it checks what page is loaded

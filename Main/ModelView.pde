@@ -18,12 +18,12 @@ public class ModelView{
   
   void Setup(){ //called in Main.setup()
     buttonbordersize = width/288;
-    plusButton = new RectButton(width/16+width/16,height/6+min(width*2/3,height*2/3)+height/32,height/16,height/16,DARK,DARKERGREEN,DARKGREEN,DARKERGREEN,buttonbordersize);
-    plusButton.setText(width/25,GREEN,"+");
-    minusButton = new RectButton(width/16,height/6+min(width*2/3,height*2/3)+height/32,height/16,height/16,DARK,DARKERGREEN,DARKGREEN,DARKERGREEN,buttonbordersize);
-    minusButton.setText(width/25,GREEN,"-");
-    selectFolderButton = new RectButton(width/8 + width/16,height/6+min(width*2/3,height*2/3)+height/32,width/16+(height*2/3)-width/8-width/16,height/16,DARK,DARKERGREEN,DARKGREEN,DARKERGREEN,buttonbordersize);
-    selectFolderButton.setText(width/50,GREEN,"Select Folder");
+    plusButton = new RectButton(width/16+width/16,height/6+min(width*2/3,height*2/3)+height/32,height/16,height/16,DARK,LESSERLIGHT,LIGHTER,LIGHT,buttonbordersize);
+    plusButton.setText(width/25,DARK,"+");
+    minusButton = new RectButton(width/16,height/6+min(width*2/3,height*2/3)+height/32,height/16,height/16,DARK,LESSERLIGHT,LIGHTER,LIGHT,buttonbordersize);
+    minusButton.setText(width/25,DARK,"-");
+    selectFolderButton = new RectButton(width/8 + width/16,height/6+min(width*2/3,height*2/3)+height/32,width/16+(height*2/3)-width/8-width/16,height/16,DARK,LESSERLIGHT,LIGHTER,LIGHT,buttonbordersize);
+    selectFolderButton.setText(width/50,DARK,"Select Folder");
   }
   
   void update(){ //called by Main.windowResized() anytime the window is resized
@@ -55,39 +55,6 @@ public class ModelView{
     plusButton.Page(width/16+width/16,height/6+min(width*2/3,height*2/3)+height/32);
     minusButton.Page(width/16,height/6+min(width*2/3,height*2/3)+height/32);
     selectFolderButton.Page(width/8 + width/16,height/6+min(width*2/3,height*2/3)+height/32);
-    
-    /*
-    //minus square
-    stroke(DARK);
-    fill(DARKERGREEN);
-    if(mc.squareClosedRangeDim(width/16,height/6+min(width*2/3,height*2/3)+height/32,height/16,height/16)) fill(DARKGREEN);
-    square(width/16,height/6+min(width*2/3,height*2/3)+height/32,height/16);
-    TextDisplay minus = new TextDisplay(width/25,GREEN,new StringBuffer("-"));
-    fill(255);
-    minus.displayCentered(width/16,height/6+(height*2/3)+height/32,width/16+height/16,height/6+(height*2/3)+height/32+height/16);
-    stroke(0);
-    
-     // plus square
-    stroke(DARK);
-    fill(DARKERGREEN);
-    if(mc.squareClosedRangeDim(width/16+width/16,height/6+min(width*2/3,height*2/3)+height/32,height/16,height/16)) fill(DARKGREEN);
-    square(width/16+width/16,height/6+min(width*2/3,height*2/3)+height/32,height/16);
-    TextDisplay plus = new TextDisplay(width/25,GREEN,new StringBuffer("+"));
-    fill(255);
-    plus.displayCentered(width/8,height/6+(height*2/3)+height/32,width/8+height/16,height/6+(height*2/3)+height/32+height/16);
-    stroke(0);
-    
-    //select folder button
-    
-    stroke(DARK);
-    fill(DARKERGREEN);
-    if(mc.squareClosedRangeDim(width/8 + width/16,height/6+(height*2/3)+height/32,width/16+(height*2/3)-width/8-width/16,height/16)) fill(DARKGREEN);
-    rect(width/8 + width/16,height/6+(height*2/3)+height/32,width/16+(height*2/3)-width/8-width/16,height/16);
-    TextDisplay folderText  = new TextDisplay(width/50,GREEN,new StringBuffer("Select Folder"));
-    fill(255);
-    folderText.displayCentered(width/8+width/16,height/6+(height*2/3)+height/32,width/16+(height*2/3),height/6+(height*2/3)+height/32+height/16);
-    
-    */
     
     if(folderPath != tmpfp && folderPath != null){
       filenames = new String[100];

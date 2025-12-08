@@ -28,18 +28,18 @@ public class Settings{
     extText = new TextDisplay(width/30,GREEN,new StringBuffer("EXTENSION"));
     
     //set initial position, dimension, colors, border and text of the buttons
-    resButton1 = new RectButton(width/8 + width/4 + width/16,height/6+height/24+(int)anim,width/10,height/12,GREEN,DARK,DARKGREEN,DARKERGREEN,buttonbordersize);
+    resButton1 = new RectButton(width/8 + width/4 + width/16,height/6+height/24+(int)anim,width/10,height/12,GREEN,DARK,DARKERGREEN,DARKGREEN,buttonbordersize,true);
     resButton1.setText(width/50,GREEN,"1440x810");
-    resButton2 = new RectButton(width/8 + width/8 + width/4 + width/16,height/6+height/24+(int)anim,width/10,height/12,GREEN,DARK,DARKGREEN,DARKERGREEN,buttonbordersize);
+    resButton2 = new RectButton(width/8 + width/8 + width/4 + width/16,height/6+height/24+(int)anim,width/10,height/12,GREEN,DARK,DARKERGREEN,DARKGREEN,buttonbordersize,true);
     resButton2.setText(width/50,GREEN,"1280x720");
-    resButton3 = new RectButton(width/8 + width/4 + width/4 + width/16,height/6+height/24+(int)anim,width/10,height/12,GREEN,DARK,DARKGREEN,DARKERGREEN,buttonbordersize);
+    resButton3 = new RectButton(width/8 + width/4 + width/4 + width/16,height/6+height/24+(int)anim,width/10,height/12,GREEN,DARK,DARKERGREEN,DARKGREEN,buttonbordersize,true);
     resButton3.setText(width/50,GREEN,"960x540");
     
-    extButton1 = new RectButton(width/8 + width/4 + width/16,height/3+height/24+(int)anim,width/10,height/12,GREEN,DARK,DARKGREEN,DARKERGREEN,buttonbordersize);
+    extButton1 = new RectButton(width/8 + width/4 + width/16,height/3+height/24+(int)anim,width/10,height/12,GREEN,DARK,DARKERGREEN,DARKGREEN,buttonbordersize,true);
     extButton1.setText(width/50,GREEN,".jpg");
-    extButton2 = new RectButton(width/8 + width/8 + width/4 + width/16,height/3+height/24+(int)anim,width/10,height/12,GREEN,DARK,DARKGREEN,DARKERGREEN,buttonbordersize);
+    extButton2 = new RectButton(width/8 + width/8 + width/4 + width/16,height/3+height/24+(int)anim,width/10,height/12,GREEN,DARK,DARKERGREEN,DARKGREEN,buttonbordersize,true);
     extButton2.setText(width/50,GREEN,".png");
-    extButton3 = new RectButton(width/8 + width/4 + width/4 + width/16,height/3+height/24+(int)anim,width/10,height/12,GREEN,DARK,DARKGREEN,DARKERGREEN,buttonbordersize);
+    extButton3 = new RectButton(width/8 + width/4 + width/4 + width/16,height/3+height/24+(int)anim,width/10,height/12,GREEN,DARK,DARKERGREEN,DARKGREEN,buttonbordersize,true);
     extButton3.setText(width/50,GREEN,".tga");
     
     resButton1.setSelected(true); //since those are the default settings, we set the variable that show that
