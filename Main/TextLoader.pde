@@ -28,6 +28,9 @@ public class TextLoader{
     fill(frameColor);
     rect(ix,iy,dimx,dimy); //frame
     fill(bgColor);
+    rect(ix+(dimx/80),iy+(dimy/80),dimx - (dimx/40),dimy - (dimy/40)); //bg
+    textSize(textDim);
+    fill(textColor);
     if(Text != null) text(Text,ix+(dimx/40),iy+(dimy/40),dimx -(dimx/20),dimy -(dimy/20));
   }
 
