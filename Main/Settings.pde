@@ -66,7 +66,7 @@ public class Settings{
       anim = height - height/64 - height/18; 
     }
     if(open == 1){ //if it's opening, snap it to open pos
-      anim = 0;
+      anim = height/32;
     }
   }
 
@@ -75,8 +75,8 @@ public class Settings{
     //animation of the settings screen
     if(open == 1){
       anim = anim-v;
-      if(anim <= 0){
-        anim = 0;
+      if(anim <= height/32){
+        anim = height/32;
         open = 0;
       }
     }
@@ -96,13 +96,15 @@ public class Settings{
     strokeWeight(width/480);
     stroke(0);
     fill(LESSLIGHT);
-    rect(width/2-width/16,height/64+anim,width/8,height/8,width/64); //tab to open/close
+    rect(width/2-width/16,height/64+anim - height/32,width/8,height/8,width/64); //tab to open/close
     fill(LIGHT);
     rect(width/8-width/20,height/6-height/10+anim,width/2 + width/4 + width/10,height/2 + height/4 + width/8,width/32); //frame of the settings screen
     fill(DARK);
     rect(width/8,height/6+anim,width/2 + width/4,height/2 + height/4,width/64); //black screen of the settings screen
     stroke(0);
     strokeWeight(1);
+    
+    image(Options,width/2-height/40,height/64+(int)anim - height/64,height/20,height/20);
     
         
     resText.displayCentered(width/8,height/6+anim,width/8+width/4,height/6+height/6+anim); //"Resolution" text
@@ -120,9 +122,9 @@ public class Settings{
 
   void click(int px,int py){
     Coordinates pc = new Coordinates(px,py);//gets mouse pos from onClick() in main
-    if(pc.squareClosedRange(width/2-width/16,height/64+(int)anim,width/2+width/16,height/6-height/10+(int)anim)){
+    if(pc.squareClosedRange(width/2-width/16,height/64+(int)anim - height/32,width/2+width/16,height/6-height/10+(int)anim)){
       if(open!=0) open = open*(-1); //tab to open/close, works even if the window is in animation cycle
-      else if(anim == 0){open = -1;}
+      else if(anim == height/32){open = -1;}
       else open = 1;
     }
     

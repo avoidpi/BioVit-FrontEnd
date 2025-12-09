@@ -14,6 +14,7 @@ PImage img; //cute little computer logo topleft corner
 PImage BioVit; //biovit text topright corner
 PImage Scan; //placeholder image for imgloader
 PImage Schermo; //not used anymore, leaving it in because i might in the future
+PImage Options; //gear icon for the settings menu
 String extension = ".jpg"; //type of extension chosen, gets changed in the settings menu (def is .jpg)
 
 private static final int Home = 0; //i define these variables as they were a #define
@@ -54,6 +55,7 @@ void setup(){
   img = loadImage("LOGO.png");
   BioVit = loadImage("ScrittaBioVit.png");
   Scan = loadImage("frame.jpg");
+  Options = loadImage("options.png");
   settings.Setup();
   modelView.Setup();
   headerView.Setup();
@@ -80,7 +82,7 @@ void folderSelected(File selection){
 void mouseClicked(){ //function gets called everytime there's a mouse click
   Coordinates c = new Coordinates(mouseX,mouseY);
   if(settings.anim != height - height/64 - height/18){settings.click(mouseX,mouseY);} //if the settings menu is open/being animated it sends click data to settings page
-  else if(c.squareClosedRange(width/2-width/16,height/64+height - height/64 - height/18,width/2+width/16,height/6-height/10+height - height/64 - height/18)){
+  else if(c.squareClosedRange(width/2-width/16,height/64+height - height/64 - height/18 -height/32,width/2+width/16,height/6-height/10+height - height/64 - height/18)){
     settings.open = +1; //else it checks for the settings tab and opens the settings menu
   }
   else if(c.squareClosedRange(0,0,width,headerView.coordinates.y)){ //else if the cursor is inside the header it sends click data to header page
