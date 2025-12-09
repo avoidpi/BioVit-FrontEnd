@@ -14,26 +14,35 @@ public class ModelView{
   RectButton plusButton;
   RectButton minusButton;
   RectButton selectFolderButton;
+  RectButton copyToClipboardButton;
+  RectButton copyToFileButton;
   
   void Setup(){ //called in Main.setup()
     this.imgLoader = new ImgLoader();
-    this.textLoader = new TextLoader(LESSERLIGHT,WHITE,DARK);
+    this.textLoader = new TextLoader(DARK,WHITE,DARK);
     this.textLoader.setText(loadedString);
-    this.buttonbordersize = width/288;
+    this.buttonbordersize = width/480;
     plusButton = new RectButton(width/16+width/16,height/6+min(width*2/3,height*2/3)+height/32,height/16,height/16,DARK,LESSERLIGHT,LIGHTER,LIGHT,buttonbordersize);
     plusButton.setText(width/25,DARK,"+");
     minusButton = new RectButton(width/16,height/6+min(width*2/3,height*2/3)+height/32,height/16,height/16,DARK,LESSERLIGHT,LIGHTER,LIGHT,buttonbordersize);
     minusButton.setText(width/25,DARK,"-");
     selectFolderButton = new RectButton(width/8 + width/16,height/6+min(width*2/3,height*2/3)+height/32,width/16+(height*2/3)-width/8-width/16,height/16,DARK,LESSERLIGHT,LIGHTER,LIGHT,buttonbordersize);
     selectFolderButton.setText(width/50,DARK,"Select Folder");
+    
+    copyToClipboardButton = new RectButton((int)(width-((2/5.0)*min(width*2/3,height*2/3))-width/16 - buttonbordersize),height/6+min(width*2/3,height*2/3)+height/32,(int)((2/5.0)*min(width*2/3,height*2/3)),height/16,DARK,LESSERLIGHT,LIGHTER,LIGHT,buttonbordersize);
+    copyToClipboardButton.setText(width/70,DARK,"Copy to Clipboard");
+    
+    copyToFileButton = new RectButton((int)(width-(min(width*2/3,height*2/3))-width/16 + buttonbordersize),height/6+min(width*2/3,height*2/3)+height/32,(int)((2/5.0)*min(width*2/3,height*2/3)),height/16,DARK,LESSERLIGHT,LIGHTER,LIGHT,buttonbordersize);
+    copyToFileButton.setText(width/70,DARK,"Copy as File in Folder");
   }
   
   void update(){ //called by Main.windowResized() anytime the window is resized
-    buttonbordersize = width/288;
+    buttonbordersize = width/480;
     plusButton.updateDim(width/16+width/16,height/6+min(width*2/3,height*2/3)+height/32,height/16,height/16,buttonbordersize,width/25);
     minusButton.updateDim(width/16,height/6+min(width*2/3,height*2/3)+height/32,height/16,height/16,buttonbordersize,width/25);
     selectFolderButton.updateDim(width/8 + width/16,height/6+min(width*2/3,height*2/3)+height/32,width/16+min(width*2/3,height*2/3)-width/8-width/16,height/16,buttonbordersize,width/50);
-    
+    copyToClipboardButton.updateDim((int)(width-((2/5.0)*min(width*2/3,height*2/3))-width/16 - buttonbordersize),height/6+min(width*2/3,height*2/3)+height/32,(int)((2/5.0)*min(width*2/3,height*2/3)),height/16,buttonbordersize,width/70);
+    copyToFileButton.updateDim((int)(width-(min(width*2/3,height*2/3))-width/16 + buttonbordersize),height/6+min(width*2/3,height*2/3)+height/32,(int)((2/5.0)*min(width*2/3,height*2/3)),height/16,buttonbordersize,width/70);
   }
   
   void page(){
@@ -59,6 +68,8 @@ public class ModelView{
     plusButton.Page(width/16+width/16,height/6+min(width*2/3,height*2/3)+height/32);
     minusButton.Page(width/16,height/6+min(width*2/3,height*2/3)+height/32);
     selectFolderButton.Page(width/8 + width/16,height/6+min(width*2/3,height*2/3)+height/32);
+    copyToClipboardButton.Page((int)(width-((2/5.0)*min(width*2/3,height*2/3))-width/16 -buttonbordersize/2),height/6+min(width*2/3,height*2/3)+height/32);
+    copyToFileButton.Page((int)(width-(min(width*2/3,height*2/3))-width/16 + buttonbordersize),height/6+min(width*2/3,height*2/3)+height/32);
     
     if(folderPath != tmpfp && folderPath != null){
       filenames = new String[100];
@@ -96,6 +107,17 @@ public class ModelView{
       if(filenames.length>0)
       imgLoader.changeFrame(images[fileindex]);
       //imgLoader.changeFrameNoCache(folderPath+'/'+filenames[fileindex]);
+    }
+    if(copyToClipboardButton.isClicked(c) && loadedString != null){
+      StringSelection data = new StringSelection(loadedString);
+      Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+      clipboard.setContents(data, data);
+    }
+    if(copyToFileButton.isClicked(c) && loadedString != null && folderPath != null){
+      outputToFile = createWriter(folderPath+'/'+"Biovit "+String.valueOf(hour())+"-"+String.valueOf(minute())+"-"+String.valueOf(second())+" "+String.valueOf(day())+"-"+String.valueOf(month())+"-"+String.valueOf(year())+".txt");
+      outputToFile.println(loadedString);
+      outputToFile.flush();
+      outputToFile.close();
     }
   }
   

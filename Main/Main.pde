@@ -1,7 +1,13 @@
 import java.io.FilenameFilter;
-//import java.awt.*; //unused
 
-String folderPath;
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.datatransfer.*;
+import javax.swing.*;
+import java.io.*;
+
+PrintWriter outputToFile;
+String folderPath = null;
 boolean selectdir = false;
 int x = 0;
 PImage img; //cute little computer logo topleft corner
