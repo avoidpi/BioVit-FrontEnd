@@ -3,6 +3,8 @@ public class ModelView{
   ImgLoader imgLoader;
   String[] filenames = new String[256];
   PImage[] images = new PImage[256];
+  String[] tmpDirfilenames;
+  PImage buffer;
   String tmpfp = "random";
   int fileindex = 0;
   String copyText  = "";
@@ -81,18 +83,59 @@ public class ModelView{
       fileindex = 0;
       
       for(int i=0;i<filenames.length;i++){ //cache all images in the folder
-        images[i] = loadImage(folderPath+'/'+filenames[i]);
+        images[i] = loadImage(folderPath+File.separator+filenames[i]);
         //genuinely went insane trying to detect os to use \ and / based on it
         //then discovered windows recognizes / as \ when trying to access directories
       }
       
+      File tmpsave = new File(folderPath+File.separator+"tmpsave");
+      if(tmpsave.isDirectory()){ //every time a directory gets opened, we check for a tmpsave dir and we delete it if it exists
+        deleteTmpDir(tmpsave.toString());
+        println("Deleted "+tmpsave.toString());
+      }
+      
+      //after the (if it existed) deletion of tmpsave, we re-create it (this ensures the directory is always containing all the correct files)
+      for(int i=0;i<filenames.length;i++){ //save and convert to jpg from either png, jpg or tva
+        String addzeros = "";
+        if(i<1000) addzeros =addzeros.concat("0");
+        if(i<100) addzeros =addzeros.concat("0");
+        if(i<10) addzeros =addzeros.concat("0");
+        buffer = createImage(images[i].width,images[i].height,RGB);
+        buffer = images[i].get();
+        buffer.save(folderPath+File.separator+"tmpsave"+File.separator+addzeros+i+".jpg"); //this now saves it as (path of image folder)/saved/i.jpg where i is the ith image in alphabetic order from input folder
+      }
+      
+      tmpDirfilenames = new String[256];
+      tmpDirfilenames = tmpsave.list();
+      
+      loadedString = new String("");
+      for(int i=0;i<tmpDirfilenames.length;i++){
+        loadedString = loadedString.concat(tmpDirfilenames[i]+" ");
+      }
+      textLoader.setText(loadedString);
+      
+      //to be clear, every directory that gets opened will have afterwards a tmpsave of its own, later when we will have sent the file to the api we will delete it to leave no trace
+      if(tmpsave.isDirectory())println("(Re-)Created and populated "+tmpsave.toString());
+      
       if(filenames.length>0)
-      imgLoader.changeFrame(images[0]); //cache
+      imgLoader.changeFrame(images[0]); //loads first cached image on the screen if it exists
       //imgLoader.changeFrameNoCache(folderPath+'/'+filenames[fileindex]);
       //for(int i = 0;i<100;i++){
       //println(filenames[i]);
       //}
     }
+  }
+  
+  void deleteTmpDir(String path){ //this deletes a directory and all its contents recursively, be careful calling it!!!!
+    File tmpDir = new File(path);
+    if(tmpDir.isDirectory()){
+      String[] childFiles = tmpDir.list();
+      if(childFiles == null){
+        tmpDir.delete();
+      }
+      else for(String childFilePath : childFiles) deleteTmpDir(path+File.separator+childFilePath); //absolute path of father + separator + name of child
+    }
+    else tmpDir.delete();
   }
   
   void click(int px,int py){

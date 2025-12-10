@@ -48,6 +48,7 @@ public class Settings{
   
   void update(){ //this runs everytime the window gets resized, resizing the dimensions of buttons and text
     v = width/96;
+    updateAnim();
     buttonbordersize = width/288;
     resText.updateDim(width/30);
     extText.updateDim(width/30);
@@ -67,6 +68,10 @@ public class Settings{
     }
     if(open == 1){ //if it's opening, snap it to open pos
       anim = height/32;
+    }
+    if(open == 0){
+      if(anim > height/2) anim = height/32;
+      else anim = height - height/64 - height/18;
     }
   }
 
