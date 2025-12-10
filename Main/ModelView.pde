@@ -77,15 +77,13 @@ public class ModelView{
     copyToClipboardButton.Page((int)(width-((2/5.0)*min(width*2/3,height*2/3))-width/16 -buttonbordersize/2),height/6+min(width*2/3,height*2/3)+height/32);
     copyToFileButton.Page((int)(width-(min(width*2/3,height*2/3))-width/16 + buttonbordersize),height/6+min(width*2/3,height*2/3)+height/32);
     
-    if(folderPath != tmpfp && folderPath != null){
-      filenames = new String[100];
-      filenames = loadFilenames(folderPath);
+    if(folderPath != tmpfp && folderPath != null){ //if the input folder has changed or set for the first time
+      filenames = new String[256]; //it empties the filenames string
+      filenames = loadFilenames(folderPath); //and loads the list of files ending in the selected extension in filenames
       fileindex = 0;
       
       for(int i=0;i<filenames.length;i++){ //cache all images in the folder
         images[i] = loadImage(folderPath+File.separator+filenames[i]);
-        //genuinely went insane trying to detect os to use \ and / based on it
-        //then discovered windows recognizes / as \ when trying to access directories
       }
       
       File tmpsave = new File(folderPath+File.separator+"tmpsave");
@@ -109,33 +107,32 @@ public class ModelView{
       tmpDirfilenames = tmpsave.list();
       
       loadedString = new String("");
-      for(int i=0;i<tmpDirfilenames.length;i++){
+      for(int i=0;i<tmpDirfilenames.length;i++){ //this portion of code will be later removed or reworked, for now it lists all the created files in tmpsave inside loadedString
         loadedString = loadedString.concat(tmpDirfilenames[i]+" ");
       }
-      textLoader.setText(loadedString);
+      textLoader.setText(loadedString); //we have to set the string in the textloader obviously
       
       //to be clear, every directory that gets opened will have afterwards a tmpsave of its own, later when we will have sent the file to the api we will delete it to leave no trace
       if(tmpsave.isDirectory())println("(Re-)Created and populated "+tmpsave.toString());
       
       if(filenames.length>0)
       imgLoader.changeFrame(images[0]); //loads first cached image on the screen if it exists
-      //imgLoader.changeFrameNoCache(folderPath+'/'+filenames[fileindex]);
-      //for(int i = 0;i<100;i++){
-      //println(filenames[i]);
-      //}
     }
   }
   
   void deleteTmpDir(String path){ //this deletes a directory and all its contents recursively, be careful calling it!!!!
     File tmpDir = new File(path);
     if(tmpDir.isDirectory()){
-      String[] childFiles = tmpDir.list();
-      if(childFiles == null){
+      String[] childFiles = tmpDir.list(); //lists all files/directories inside the directory
+      if(childFiles == null){ //if there's no files inside we delete it
         tmpDir.delete();
       }
-      else for(String childFilePath : childFiles) deleteTmpDir(path+File.separator+childFilePath); //absolute path of father + separator + name of child
+      else{ //if there is, delete recursively contents
+        for(String childFilePath : childFiles) deleteTmpDir(path+File.separator+childFilePath); //absolute path of father + separator + name of child
+        tmpDir.delete(); //when we have emptied the contents, delete it
+      }
     }
-    else tmpDir.delete();
+    else tmpDir.delete(); //if it's not a file we just delete it
   }
   
   void click(int px,int py){
@@ -147,13 +144,11 @@ public class ModelView{
       if(fileindex>0)fileindex--; else fileindex = filenames.length-1;
       if(filenames.length>0)
       imgLoader.changeFrame(images[fileindex]);
-      //imgLoader.changeFrameNoCache(folderPath+'/'+filenames[fileindex]);
     }
     if(plusButton.isClicked(c) && folderPath != null){
       if(fileindex<filenames.length-1)fileindex++; else fileindex = 0;
       if(filenames.length>0)
       imgLoader.changeFrame(images[fileindex]);
-      //imgLoader.changeFrameNoCache(folderPath+'/'+filenames[fileindex]);
     }
     if(copyToClipboardButton.isClicked(c) && loadedString != null){
       StringSelection data = new StringSelection(loadedString);
@@ -162,11 +157,11 @@ public class ModelView{
       copyText = "Saved to clipboard";
     }
     if(copyToFileButton.isClicked(c) && loadedString != null && folderPath != null){
-      outputToFile = createWriter(folderPath+'/'+"Biovit "+String.valueOf(hour())+"-"+String.valueOf(minute())+"-"+String.valueOf(second())+" "+String.valueOf(day())+"-"+String.valueOf(month())+"-"+String.valueOf(year())+".txt");
+      outputToFile = createWriter(folderPath+File.separator+"Biovit "+String.valueOf(hour())+"-"+String.valueOf(minute())+"-"+String.valueOf(second())+" "+String.valueOf(day())+"-"+String.valueOf(month())+"-"+String.valueOf(year())+".txt");
       outputToFile.println(loadedString);
       outputToFile.flush();
       outputToFile.close();
-      copyText = "Saved as " +folderPath+'/'+"Biovit "+String.valueOf(hour())+"-"+String.valueOf(minute())+"-"+String.valueOf(second())+" "+String.valueOf(day())+"-"+String.valueOf(month())+"-"+String.valueOf(year())+".txt";
+      copyText = "Saved as " +folderPath+File.separator+"Biovit "+String.valueOf(hour())+"-"+String.valueOf(minute())+"-"+String.valueOf(second())+" "+String.valueOf(day())+"-"+String.valueOf(month())+"-"+String.valueOf(year())+".txt";
     }
   }
   
