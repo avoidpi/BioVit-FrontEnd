@@ -1,6 +1,7 @@
 public class ModelView{
   
   ImgLoader imgLoader;
+  HttpManager httpManager;
   String[] filenames = new String[256];
   PImage[] images = new PImage[256];
   String[] tmpDirfilenames;
@@ -21,6 +22,7 @@ public class ModelView{
   RectButton copyToFileButton;
   
   void Setup(){ //called in Main.setup()
+    this.httpManager = new HttpManager();
     this.imgLoader = new ImgLoader();
     this.textLoader = new TextLoader(DARK,WHITE,DARK);
     this.textLoader.setText(loadedString);
@@ -107,6 +109,13 @@ public class ModelView{
       tmpDirfilenames = new String[256];
       tmpDirfilenames = tmpsave.list();
       
+      httpManager.sendFileList(folderPath+File.separator+"tmpsave",tmpDirfilenames);
+      
+      if(tmpsave.isDirectory()){ //every time a directory gets opened, we check for a tmpsave dir and we delete it if it exists
+        deleteTmpDir(tmpsave.toString());
+        println("Deleted "+tmpsave.toString());
+      }
+      
       loadedString = new String("Files:\n");
       for(int i=0;i<filenames.length;i++){ //this portion of code will be later removed or reworked, for now it lists all the created files in tmpsave inside loadedString
         loadedString = loadedString.concat(tmpDirfilenames[i]+" ");
@@ -118,6 +127,10 @@ public class ModelView{
       
       if(filenames.length>0)
       imgLoader.changeFrame(images[0]); //loads first cached image on the screen if it exists
+      //File imageFile =  new File(folderPath+File.separator+"tmpsave"+File.separator+"0000.jpg");
+      //loadedString = httpManager.encodeFileToBase64Binary(imageFile);
+      //textLoader.setText(loadedString); //we have to set the string in the textloader obviously
+      
     }
   }
   
