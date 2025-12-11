@@ -92,6 +92,7 @@ public class ModelView{
         println("Deleted "+tmpsave.toString());
       }
       
+      
       //after the (if it existed) deletion of tmpsave, we re-create it (this ensures the directory is always containing all the correct files)
       for(int i=0;i<filenames.length;i++){ //save and convert to jpg from either png, jpg or tva
         String addzeros = "";
@@ -106,8 +107,8 @@ public class ModelView{
       tmpDirfilenames = new String[256];
       tmpDirfilenames = tmpsave.list();
       
-      loadedString = new String("");
-      for(int i=0;i<tmpDirfilenames.length;i++){ //this portion of code will be later removed or reworked, for now it lists all the created files in tmpsave inside loadedString
+      loadedString = new String("Files:\n");
+      for(int i=0;i<filenames.length;i++){ //this portion of code will be later removed or reworked, for now it lists all the created files in tmpsave inside loadedString
         loadedString = loadedString.concat(tmpDirfilenames[i]+" ");
       }
       textLoader.setText(loadedString); //we have to set the string in the textloader obviously

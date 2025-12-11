@@ -1,4 +1,13 @@
+//we're using jdk 25
 import java.io.FilenameFilter;
+import java.net.http.*;
+import java.net.URI;
+import java.net.http.HttpRequest.*;
+import java.time.*;
+import java.nio.file.Paths;
+import javax.json.*;
+import java.util.Base64;
+import java.util.Base64.*;
 
 import java.awt.*;
 import java.awt.event.*;
