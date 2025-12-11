@@ -6,6 +6,7 @@ public class HttpManager{
   void sendFileList(String folderPath,String fileList[]){
     this.folderPath = folderPath;
     this.fileList = fileList;
+    String loadString = "";
     
     String jsonbody = filesToJSON(folderPath,fileList).toString();
     
@@ -16,7 +17,7 @@ public class HttpManager{
       .uri(URI.create("https://echo.free.beeceptor.com"))
       .timeout(Duration.ofMinutes(1))
       .header("Content-Type", "application/json")
-      .POST(BodyPublishers.ofString(jsonbody))
+      .POST(BodyPublishers.ofString(jsonbody)) //sends the json content as a string
       .build();
     //}
     //catch(FileNotFoundException e){
@@ -24,8 +25,13 @@ public class HttpManager{
       
     client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
       .thenApply(HttpResponse::body)
-      .thenAccept(System.out::println)
+      .thenAccept(this::saveString)
+      //.thenAccept(System.out::println)
       .join();
+  }
+  
+  void saveString(String save){
+    loadedString = new String(save);
   }
   
   
@@ -41,7 +47,7 @@ public class HttpManager{
     }
     
     */
-    JsonObjectBuilder objectBuilder = Json.createObjectBuilder()
+    JsonObjectBuilder objectBuilder = Json.createObjectBuilder() //numero di immagini
       .add("Length",String.valueOf(fileList.length));
       
     JsonArrayBuilder filenameBuilder = Json.createArrayBuilder();
@@ -55,7 +61,7 @@ public class HttpManager{
         addzeros = addzeros.concat(".jpg");
         filenameBuilder.add(addzeros);
       }  
-      objectBuilder.add("Filenames", filenameBuilder);
+      objectBuilder.add("Filenames", filenameBuilder); //lista di nomi delle immagini
     
     JsonArrayBuilder filedataBuilder = Json.createArrayBuilder();
                 
@@ -70,12 +76,8 @@ public class HttpManager{
       }  
       objectBuilder.add("jpgFile", filedataBuilder);
       
-      return objectBuilder.build();
+      return objectBuilder.build(); //lista di immagini convertite in stringhe Base64
   }
-  
-  
-  //need to take files, get strings in base64, put them into a json and then send them to api
-  //also, get back from api a json and parse it for string response
   
   public String encodeFileToBase64Binary(File file){ //this reads a file,encodes the file in base64 and return it as a string
             String encodedfile = null;
@@ -85,7 +87,7 @@ public class HttpManager{
                 fileInputStreamReader.read(bytes);
                 fileInputStreamReader.close();
                 encodedfile = Base64.getEncoder().encodeToString(bytes);
-                println(encodedfile);
+                //println(encodedfile);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException e) {

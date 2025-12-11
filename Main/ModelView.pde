@@ -9,9 +9,9 @@ public class ModelView{
   String tmpfp = "random";
   int fileindex = 0;
   String copyText  = "";
+  String tmpLoadedString;
   
   TextLoader textLoader;
-  String loadedString = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed orci sem, lobortis sed commodo id, venenatis vitae massa. Donec odio elit, accumsan eu condimentum a, sodales nec eros. Nulla lectus arcu, tincidunt ut ullamcorper vel, pulvinar ut nisl. Fusce scelerisque nulla fermentum dolor sollicitudin commodo. Donec at volutpat urna. Sed pharetra hendrerit nulla id vulputate. Cras pharetra iaculis diam quis tristique. Sed sollicitudin nisi ipsum, sit amet accumsan libero tempor non. Curabitur vitae viverra lectus. Vivamus sit amet placerat ex. Ut rhoncus elementum nibh eget aliquam. Sed at lacus turpis.\n\nSed non elit at odio tempor accumsan. Sed sed leo tortor. Nunc imperdiet sit amet elit et rutrum. Quisque tortor elit, lacinia nec vestibulum eu, ullamcorper ac diam. Nam feugiat lacus nec nunc iaculis, eu viverra ante euismod. Nam quis molestie risus, vel malesuada ante. Proin ullamcorper, arcu id euismod ullamcorper, magna magna fermentum justo, ut posuere magna purus ut turpis.";
   
   float buttonbordersize;
   
@@ -22,6 +22,7 @@ public class ModelView{
   RectButton copyToFileButton;
   
   void Setup(){ //called in Main.setup()
+    this.tmpLoadedString = loadedString;
     this.httpManager = new HttpManager();
     this.imgLoader = new ImgLoader();
     this.textLoader = new TextLoader(DARK,WHITE,DARK);
@@ -58,6 +59,12 @@ public class ModelView{
     textSize(width/80);
     strokeWeight(3);
     
+    if(loadedString != tmpLoadedString){
+      tmpLoadedString = loadedString;
+      textLoader.setText(loadedString);
+      //println(loadedString);
+    }
+    
     if(filenames.length>0 && filenames[fileindex] != null){ //if there are cached images (loaded after selection) show an image
       square(width/16,height/6,min(width*2/3,height*2/3));
       imgLoader.displayFrame(width/16,height/6,min(width*2/3,height*2/3),min(width*2/3,height*2/3));
@@ -89,11 +96,6 @@ public class ModelView{
       }
       
       File tmpsave = new File(folderPath+File.separator+"tmpsave");
-      if(tmpsave.isDirectory()){ //every time a directory gets opened, we check for a tmpsave dir and we delete it if it exists
-        deleteTmpDir(tmpsave.toString());
-        println("Deleted "+tmpsave.toString());
-      }
-      
       
       //after the (if it existed) deletion of tmpsave, we re-create it (this ensures the directory is always containing all the correct files)
       for(int i=0;i<filenames.length;i++){ //save and convert to jpg from either png, jpg or tva
@@ -109,6 +111,10 @@ public class ModelView{
       tmpDirfilenames = new String[256];
       tmpDirfilenames = tmpsave.list();
       
+      
+      //to be clear, every directory that gets opened will have afterwards a tmpsave of its own, later when we will have sent the file to the api we will delete it to leave no trace
+      if(tmpsave.isDirectory())println("Created and populated "+tmpsave.toString());
+      
       httpManager.sendFileList(folderPath+File.separator+"tmpsave",tmpDirfilenames);
       
       if(tmpsave.isDirectory()){ //every time a directory gets opened, we check for a tmpsave dir and we delete it if it exists
@@ -116,20 +122,8 @@ public class ModelView{
         println("Deleted "+tmpsave.toString());
       }
       
-      loadedString = new String("Files:\n");
-      for(int i=0;i<filenames.length;i++){ //this portion of code will be later removed or reworked, for now it lists all the created files in tmpsave inside loadedString
-        loadedString = loadedString.concat(tmpDirfilenames[i]+" ");
-      }
-      textLoader.setText(loadedString); //we have to set the string in the textloader obviously
-      
-      //to be clear, every directory that gets opened will have afterwards a tmpsave of its own, later when we will have sent the file to the api we will delete it to leave no trace
-      if(tmpsave.isDirectory())println("(Re-)Created and populated "+tmpsave.toString());
-      
       if(filenames.length>0)
       imgLoader.changeFrame(images[0]); //loads first cached image on the screen if it exists
-      //File imageFile =  new File(folderPath+File.separator+"tmpsave"+File.separator+"0000.jpg");
-      //loadedString = httpManager.encodeFileToBase64Binary(imageFile);
-      //textLoader.setText(loadedString); //we have to set the string in the textloader obviously
       
     }
   }

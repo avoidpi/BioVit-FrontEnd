@@ -16,6 +16,9 @@ import java.awt.datatransfer.*;
 import javax.swing.*;
 import java.io.*;
 
+String loadedString = "Output will be displayed here";
+  
+
 PrintWriter outputToFile;
 String folderPath = null;
 boolean selectdir = false;
