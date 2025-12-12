@@ -31,9 +31,50 @@ public class HttpManager{
   }
   
   void saveString(String save){
-    loadedString = new String(save);
+    //loadedString = new String(save);
+    parseForReport(save);
+    println(save);
   }
+
+  void parseForReport(String save){ //manual implementation for parsing of the response body because it's faster than trying to understand a java class to do it and implement it
   
+    //and to be clear, this works flawlessly
+  
+    String tokenName = new String("\"ModelReport\""); //we search for "ModelReport":" and then reset loadedString and put char by char inside until we find a "
+    String parsedResponse = new String("");
+    println("Looking for: "+tokenName);
+    boolean Match = false;
+    boolean MatchColon = false;
+    boolean Start = false;
+    boolean End = false;
+    char buf[] = new char[tokenName.length()];
+    for(int i=0;i<save.length() && !End;i++){ //cycle until either the string ends or we got what we wanted
+      char c = save.charAt(i);
+      if(Match){ //if at the previous cycle we found a match for tokenName ("ModelReport":") (= we're at the first char of the string we want to read)
+        if(c != '\"'){
+          if(c == ':') MatchColon = true; //we check for a colon so we're sure the match we found is a token, not a value
+          if(!MatchColon && (c == ',' || c == '}') ) Match = false; //if we find a , or } before a colon, we know the match was a value and not a token so we discard the match
+          if(Start){parsedResponse = new String(parsedResponse + c);} //adds the char to the string
+        }
+        else{
+          if(Start)End = true; //if the current char is a " and we're reading we're gonna just end the reading
+          else if(MatchColon) Start = true; //if the current char is a " and we've not started reading yet, we'll commence
+        }
+      }
+      else{ //if we haven't found a match for tokenName
+      
+        for(int j=0;j<tokenName.length()-1;j++){ //cycle the chars in a buffer of the same size as tokenName
+          buf[j] = buf[j+1];
+        }
+        buf[tokenName.length()-1] = c;
+        
+        if(tokenName.equals(new String(buf))) Match = true; //if the char buffer is a match we communicate it through a boolean
+      }
+    }
+    println(parsedResponse);
+    if(parsedResponse.equals(new String("")) || End) loadedString = new String(parsedResponse); //we save the parsed string only if it's not empty and if we actually found the ending "
+    else loadedString = new String("Error: got no report in response body");
+  }
   
   JsonObject filesToJSON(String folderPath,String fileList[]){
     
@@ -49,6 +90,8 @@ public class HttpManager{
     */
     JsonObjectBuilder objectBuilder = Json.createObjectBuilder() //numero di immagini
       .add("Length",String.valueOf(fileList.length));
+      
+    objectBuilder.add("ModelReport","this is the body of the object report");
       
     JsonArrayBuilder filenameBuilder = Json.createArrayBuilder();
     
