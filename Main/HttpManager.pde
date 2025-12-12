@@ -8,7 +8,7 @@ public class HttpManager{
     this.fileList = fileList;
     String jsonbody = filesToJSON(folderPath,fileList).toString();
     //String jsonbody = filesToJSONCoupled(folderPath,fileList).toString();
-    
+    try{
     HttpClient client = HttpClient.newHttpClient();
     HttpRequest request = null;
     //try{
@@ -27,6 +27,10 @@ public class HttpManager{
       .thenAccept(this::saveString)
       //.thenAccept(System.out::println)
       .join();
+    }
+    catch(Exception e){
+      loadedString = new String("Tried sending data but got:\n"+e.toString()+"\nAre you connected to the internet? If not, servers are down.");
+    }
   }
   
   void saveString(String save){
