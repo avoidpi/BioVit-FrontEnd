@@ -6,9 +6,8 @@ public class HttpManager{
   void sendFileList(String folderPath,String fileList[]){
     this.folderPath = folderPath;
     this.fileList = fileList;
-    String loadString = "";
-    
     String jsonbody = filesToJSON(folderPath,fileList).toString();
+    //String jsonbody = filesToJSONCoupled(folderPath,fileList).toString();
     
     HttpClient client = HttpClient.newHttpClient();
     HttpRequest request = null;
@@ -33,7 +32,7 @@ public class HttpManager{
   void saveString(String save){
     //loadedString = new String(save);
     parseForReport(save);
-    println(save);
+    //println(save);
   }
 
   void parseForReport(String save){ //manual implementation for parsing of the response body because it's faster than trying to understand a java class to do it and implement it
@@ -91,35 +90,54 @@ public class HttpManager{
     JsonObjectBuilder objectBuilder = Json.createObjectBuilder() //numero di immagini
       .add("Length",String.valueOf(fileList.length));
       
-    objectBuilder.add("ModelReport","this is the body of the object report");
+    objectBuilder.add("ModelReport","This is the report as a String");
       
     JsonArrayBuilder filenameBuilder = Json.createArrayBuilder();
     
     for(int i=0;i<fileList.length;i++){
-        String addzeros = "";
-        if(i<1000) addzeros =addzeros.concat("0");
-        if(i<100) addzeros =addzeros.concat("0");
-        if(i<10) addzeros =addzeros.concat("0");
-        addzeros = addzeros.concat(String.valueOf(i));
-        addzeros = addzeros.concat(".jpg");
-        filenameBuilder.add(addzeros);
+        filenameBuilder.add(fileList[i]);
       }  
       objectBuilder.add("Filenames", filenameBuilder); //lista di nomi delle immagini
     
     JsonArrayBuilder filedataBuilder = Json.createArrayBuilder();
                 
       for(int i=0;i<fileList.length;i++){
-        String addzeros = "";
-        if(i<1000) addzeros =addzeros.concat("0");
-        if(i<100) addzeros =addzeros.concat("0");
-        if(i<10) addzeros =addzeros.concat("0");
-        File imageFile =  new File(folderPath+File.separator+addzeros+i+".jpg");
+        File imageFile =  new File(folderPath+File.separator+fileList[i]);
         String encodedfile = new String(encodeFileToBase64Binary(imageFile));
         filedataBuilder.add(encodedfile);
       }  
       objectBuilder.add("jpgFile", filedataBuilder);
       
       return objectBuilder.build(); //lista di immagini convertite in stringhe Base64
+  }
+  
+  
+  JsonObject filesToJSONCoupled(String folderPath,String fileList[]){
+    
+    //il file Json sarà formattato così: (meno l'indentazione, che in caso si può implementare dopo)
+    /*
+    
+    {
+      "Length":"fileList.length"
+      "filename1":"data of filename1", <- jpg encoded in base64
+      "filename2":"data of filename2",
+    }
+    
+    */
+    JsonObjectBuilder objectBuilder = Json.createObjectBuilder() //numero di immagini
+      .add("Length",String.valueOf(fileList.length));
+      
+    objectBuilder.add("ModelReport","this is the body of the object report");
+      
+    JsonArrayBuilder filenameBuilder = Json.createArrayBuilder();
+                
+    for(int i=0;i<fileList.length;i++){
+      File imageFile =  new File(folderPath+File.separator+fileList[i]);
+      String encodedfile = new String(encodeFileToBase64Binary(imageFile));
+      objectBuilder.add(fileList[i], encodedfile);
+    }  
+      
+    return objectBuilder.build(); //lista di immagini convertite in stringhe Base64
   }
   
   public String encodeFileToBase64Binary(File file){ //this reads a file,encodes the file in base64 and return it as a string

@@ -10,6 +10,7 @@ public class ModelView{
   int fileindex = 0;
   String copyText  = "";
   String tmpLoadedString;
+  boolean ready = false;
   
   TextLoader textLoader;
   
@@ -20,6 +21,7 @@ public class ModelView{
   RectButton selectFolderButton;
   RectButton copyToClipboardButton;
   RectButton copyToFileButton;
+  RectButton uploadButton;
   
   void Setup(){ //called in Main.setup()
     this.tmpLoadedString = loadedString;
@@ -40,6 +42,9 @@ public class ModelView{
     
     copyToFileButton = new RectButton((int)(width-(min(width*2/3,height*2/3))-width/16 + buttonbordersize),height/6+min(width*2/3,height*2/3)+height/32,(int)((2/5.0)*min(width*2/3,height*2/3)),height/16,DARK,LESSERLIGHT,LIGHTER,LIGHT,buttonbordersize);
     copyToFileButton.setText(width/70,DARK,"Copy as File in Folder");
+    
+    uploadButton = new RectButton(width/2-width/20,height/2-height/32,width/10,height/16,DARK,LESSERLIGHT,LIGHTER,LIGHT,buttonbordersize);
+    uploadButton.setText(width/70,DARK,"Upload images");
   }
   
   void update(){ //called by Main.windowResized() anytime the window is resized
@@ -49,9 +54,11 @@ public class ModelView{
     selectFolderButton.updateDim(width/8 + width/16,height/6+min(width*2/3,height*2/3)+height/32,width/16+min(width*2/3,height*2/3)-width/8-width/16,height/16,buttonbordersize,width/50);
     copyToClipboardButton.updateDim((int)(width-((2/5.0)*min(width*2/3,height*2/3))-width/16 - buttonbordersize),height/6+min(width*2/3,height*2/3)+height/32,(int)((2/5.0)*min(width*2/3,height*2/3)),height/16,buttonbordersize,width/70);
     copyToFileButton.updateDim((int)(width-(min(width*2/3,height*2/3))-width/16 + buttonbordersize),height/6+min(width*2/3,height*2/3)+height/32,(int)((2/5.0)*min(width*2/3,height*2/3)),height/16,buttonbordersize,width/70);
+    uploadButton.updateDim(width/2-width/20,height/2-height/32,width/10,height/16,buttonbordersize,width/70);
   }
   
   void page(){
+    ready = true;
     background(240,235,196);
     surface.setTitle("BioVit-GPT - Model");
     
@@ -85,8 +92,11 @@ public class ModelView{
     selectFolderButton.Page(width/8 + width/16,height/6+min(width*2/3,height*2/3)+height/32);
     copyToClipboardButton.Page((int)(width-((2/5.0)*min(width*2/3,height*2/3))-width/16 -buttonbordersize/2),height/6+min(width*2/3,height*2/3)+height/32);
     copyToFileButton.Page((int)(width-(min(width*2/3,height*2/3))-width/16 + buttonbordersize),height/6+min(width*2/3,height*2/3)+height/32);
+    uploadButton.Page(width/2-width/20,height/2-height/32);
     
     if(folderPath != tmpfp && folderPath != null){ //if the input folder has changed or set for the first time
+      ready = false; //we disable the upload button until we have updated the data we have on file images
+      
       filenames = new String[256]; //it empties the filenames string
       filenames = loadFilenames(folderPath); //and loads the list of files ending in the selected extension in filenames
       fileindex = 0;
@@ -95,7 +105,16 @@ public class ModelView{
         images[i] = loadImage(folderPath+File.separator+filenames[i]);
       }
       
-      File tmpsave = new File(folderPath+File.separator+"tmpsave");
+      if(filenames.length>0)
+      imgLoader.changeFrame(images[0]); //loads first cached image on the screen if it exists
+      
+    }
+  }
+  
+  void upload(String folderPath, String filenames[]){
+    ready = false;
+    
+    File tmpsave = new File(folderPath+File.separator+"tmpsave");
       
       //after the (if it existed) deletion of tmpsave, we re-create it (this ensures the directory is always containing all the correct files)
       for(int i=0;i<filenames.length;i++){ //save and convert to jpg from either png, jpg or tva
@@ -121,11 +140,7 @@ public class ModelView{
         deleteTmpDir(tmpsave.toString());
         println("Deleted "+tmpsave.toString());
       }
-      
-      if(filenames.length>0)
-      imgLoader.changeFrame(images[0]); //loads first cached image on the screen if it exists
-      
-    }
+    
   }
   
   void deleteTmpDir(String path){ //this deletes a directory and all its contents recursively, be careful calling it!!!!
@@ -145,6 +160,13 @@ public class ModelView{
   
   void click(int px,int py){
     Coordinates c = new Coordinates(px,py);
+    
+    if(uploadButton.isClicked(c) && ready){ //ready makes us sure a person cannot click the ready button multiple times per frame (so you cannot click it while a folder loading or file upload is going)
+      if(filenames.length>0 && filenames[fileindex] != null){ //the ready variable should reduce accidental multiple requests while the response is still loading
+        upload(folderPath,filenames);
+      }
+    }
+    
     if(selectFolderButton.isClicked(c)){
       selectdir = true;
     }
