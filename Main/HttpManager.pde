@@ -8,24 +8,21 @@ public class HttpManager{
     this.fileList = fileList;
     String jsonbody = filesToJSON(folderPath,fileList).toString();
     //String jsonbody = filesToJSONCoupled(folderPath,fileList).toString();
+    println("Body size of request: "+jsonbody.getBytes().length);
     try{
     HttpClient client = HttpClient.newHttpClient();
     HttpRequest request = null;
-    //try{
+    
     request = HttpRequest.newBuilder()
       .uri(URI.create("https://echo.free.beeceptor.com"))
       .timeout(Duration.ofMinutes(1))
       .header("Content-Type", "application/json")
       .POST(BodyPublishers.ofString(jsonbody)) //sends the json content as a string
       .build();
-    //}
-    //catch(FileNotFoundException e){
-    //}
       
     client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
       .thenApply(HttpResponse::body)
       .thenAccept(this::saveString)
-      //.thenAccept(System.out::println)
       .join();
     }
     catch(Exception e){

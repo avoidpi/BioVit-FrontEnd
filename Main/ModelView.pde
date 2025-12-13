@@ -2,8 +2,8 @@ public class ModelView{
   
   ImgLoader imgLoader;
   HttpManager httpManager;
-  String[] filenames = new String[256];
-  PImage[] images = new PImage[256];
+  String[] filenames = new String[0];
+  PImage[] images = new PImage[0];
   String[] tmpDirfilenames;
   PImage buffer;
   String tmpfp = "random";
@@ -97,9 +97,10 @@ public class ModelView{
     if(folderPath != tmpfp && folderPath != null){ //if the input folder has changed or set for the first time
       ready = false; //we disable the upload button until we have updated the data we have on file images
       
-      filenames = new String[256]; //it empties the filenames string
+      filenames = new String[0]; //it empties the filenames string
       filenames = loadFilenames(folderPath); //and loads the list of files ending in the selected extension in filenames
       fileindex = 0;
+      images = new PImage[filenames.length];
       
       for(int i=0;i<filenames.length;i++){ //cache all images in the folder
         images[i] = loadImage(folderPath+File.separator+filenames[i]);
@@ -115,19 +116,28 @@ public class ModelView{
     ready = false;
     
     File tmpsave = new File(folderPath+File.separator+"tmpsave");
-      
       //after the (if it existed) deletion of tmpsave, we re-create it (this ensures the directory is always containing all the correct files)
       for(int i=0;i<filenames.length;i++){ //save and convert to jpg from either png, jpg or tva
         String addzeros = "";
         if(i<1000) addzeros =addzeros.concat("0");
         if(i<100) addzeros =addzeros.concat("0");
         if(i<10) addzeros =addzeros.concat("0");
-        buffer = createImage(images[i].width,images[i].height,RGB);
-        buffer = images[i].get();
-        buffer.save(folderPath+File.separator+"tmpsave"+File.separator+addzeros+i+".jpg"); //this now saves it as (path of image folder)/saved/i.jpg where i is the ith image in alphabetic order from input folder
+        //images[i].resize(100,0); //PImage.resize() resizes the image to width,height (if you set one of the two as 
+        //images[i].save(folderPath+File.separator+"tmpsave"+File.separator+addzeros+i+".jpg"); //this now saves it as (path of image folder)/saved/i.jpg where i is the ith image in alphabetic order from inputfolder
+        
+        if(stdResize){ //to have the image resize just change the variable on main and put x,y standard size dimensions
+          PImage buffer;
+          buffer = createImage(images[i].width,images[i].height,RGB);
+          buffer = images[i].get();
+          if((buffer.height/(float)stddmy)<(buffer.width/(float)stddmx)){
+            buffer.resize(stddmx,0);
+          }
+          buffer.resize(0,stddmy);
+          ShimAWT.saveImage(buffer,folderPath+File.separator+"tmpsave"+File.separator+addzeros+i+".jpg","quality=1"); //lossless jpg save (resized smaller than stdsize mantaining proportions)
+        } else ShimAWT.saveImage(images[i],folderPath+File.separator+"tmpsave"+File.separator+addzeros+i+".jpg","quality=1"); //lossless jpg save (but with original size)
       }
       
-      tmpDirfilenames = new String[256];
+      tmpDirfilenames = new String[0];
       tmpDirfilenames = tmpsave.list();
       
       
@@ -204,5 +214,6 @@ public class ModelView{
     };
     tmpfp = path;
     return folder.list(filenameFilter);
-  }
+  }  
+  
 }
