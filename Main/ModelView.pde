@@ -4,7 +4,7 @@ public class ModelView{
   ImgLoader imgLoader;
   HttpManager httpManager;
   String[] filenames = new String[0];
-  PImage[] images = new PImage[0];
+  PImage[] images = new PImage[0]; //this array caches images if cache is set to true (ON, in settings)
   String[] tmpDirfilenames;
   PImage buffer;
   String tmpfp = "random";
@@ -119,12 +119,12 @@ public class ModelView{
       images[i] = loadImage(folderPath+File.separator+filenames[i]);
     }
       
-    if(filenames.length>0)imgLoader.changeFrame(images[0]); //loads first cached image on the screen if it exists
+    if(filenames.length>0)imgLoader.changeFrame(images[fileindex]); //loads first cached image on the screen if it exists
   }
   
   void imageCacheOFF(){
-    images = new PImage[0];
-    if(filenames.length>0)imgLoader.changeFrameNoCache(folderPath+File.separator+filenames[0]);
+    images = new PImage[0]; //clears PImage cache
+    if(filenames.length>0)imgLoader.changeFrameNoCache(folderPath+File.separator+filenames[fileindex]);
   }
   
   void upload(String folderPath, String filenames[]){
