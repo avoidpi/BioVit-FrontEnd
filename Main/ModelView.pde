@@ -132,9 +132,9 @@ public class ModelView{
           if((buffer.height/(float)stddmy)<(buffer.width/(float)stddmx)){
             buffer.resize(stddmx,0);
           }
-          buffer.resize(0,stddmy);
+          else buffer.resize(0,stddmy);
           
-          /* //de-comment if you want the image to mantainin proportions but to be of stddmx,stddmy size, centered inside a black background where there's empty space (so if the proportions don't match)
+           //de-comment if you want the image to mantainin proportions but to be of stddmx,stddmy size, centered inside a black background where there's empty space (so if the proportions don't match)
           PImage framedImage = createImage(stddmx,stddmy,RGB); //creates new image
           framedImage.loadPixels();
           for(int p=0;p<framedImage.pixels.length;p++){ //fills the background of the new image with black
@@ -142,9 +142,9 @@ public class ModelView{
           }
           framedImage.updatePixels();
           framedImage.set(stddmx/2-buffer.width/2,stddmy/2-buffer.height/2,buffer); //pastes buffer centered in the frame
-          buffer = createImage(stddmx,stddmy,RGB); //re-copies it in the buffer (so we don't have to modify the saveImage code
+          buffer = createImage(stddmx,stddmy,RGB); //re-copies it in the buffer (so we don't have to modify the saveImage code)
           buffer = framedImage.get();
-          */
+          
           
           ShimAWT.saveImage(buffer,folderPath+File.separator+"tmpsave"+File.separator+addzeros+i+".jpg","quality=1"); //lossless jpg save (resized smaller than stdsize mantaining proportions)
         } else ShimAWT.saveImage(images[i],folderPath+File.separator+"tmpsave"+File.separator+addzeros+i+".jpg","quality=1"); //lossless jpg save (but with original size)

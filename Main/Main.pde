@@ -33,8 +33,8 @@ PImage Options; //gear icon for the settings menu
 String extension = ".jpg"; //type of extension chosen, gets changed in the settings menu (def is .jpg)
 
 boolean stdResize = true;
-int stddmx = 100;
-int stddmy = 100;
+int stddmx = 512;
+int stddmy = 512;
 
 
 private static final int Home = 0; //i define these variables as they were a #define

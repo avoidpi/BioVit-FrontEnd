@@ -6,8 +6,8 @@ public class HttpManager{
   void sendFileList(String folderPath,String fileList[]){
     this.folderPath = folderPath;
     this.fileList = fileList;
-    String jsonbody = filesToJSON(folderPath,fileList).toString();
-    //String jsonbody = filesToJSONCoupled(folderPath,fileList).toString();
+    //String jsonbody = filesToJSON(folderPath,fileList).toString();
+    String jsonbody = filesToJSONCoupled(folderPath,fileList).toString();
     println("Body size of request: "+jsonbody.getBytes().length);
     try{
     HttpClient client = HttpClient.newHttpClient();
@@ -32,17 +32,20 @@ public class HttpManager{
   
   void saveString(String save){
     //loadedString = new String(save);
-    parseForReport(save);
+    loadedString = new String(parseForReport(save,"ModelReport"));
+    //String loadedString2 = new String(parseForReport(save,"0000.jpg"));
+    //decodeBase64BinaryToFile(loadedString2,folderPath+File.separator+"out.jpg");
+    //delay(10000);
     //println(save);
   }
 
-  void parseForReport(String save){ //manual implementation for parsing of the response body because it's faster than trying to understand a java class to do it and implement it
+  String parseForReport(String save,String token){ //manual implementation for parsing of the response body because it's faster than trying to understand a java class to do it and implement it
   
     //and to be clear, this works flawlessly
-  
-    String tokenName = new String("\"ModelReport\""); //we search for "ModelReport":" and then reset loadedString and put char by char inside until we find a "
+    //we search for Token + : +" and then reset loadedString and put char by char inside until we find a " (token includes its own "")
+    String tokenName = new String("\""+token+"\"");
     String parsedResponse = new String("");
-    println("Looking for: "+tokenName);
+    println("Looking for: "+ tokenName);
     boolean Match = false;
     boolean MatchColon = false;
     boolean Start = false;
@@ -72,8 +75,8 @@ public class HttpManager{
       }
     }
     println(parsedResponse);
-    if(parsedResponse.equals(new String("")) || End) loadedString = new String(parsedResponse); //we save the parsed string only if it's not empty and if we actually found the ending "
-    else loadedString = new String("Error: got no report in response body");
+    if(parsedResponse.equals(new String("")) || End) return parsedResponse; //we save the parsed string only if it's not empty and if we actually found the ending "
+    return (new String("Error: did not find the token in response body"));
   }
   
   JsonObject filesToJSON(String folderPath,String fileList[]){
@@ -129,8 +132,6 @@ public class HttpManager{
       .add("Length",String.valueOf(fileList.length));
       
     objectBuilder.add("ModelReport","this is the body of the object report");
-      
-    JsonArrayBuilder filenameBuilder = Json.createArrayBuilder();
                 
     for(int i=0;i<fileList.length;i++){
       File imageFile =  new File(folderPath+File.separator+fileList[i]);
@@ -158,4 +159,11 @@ public class HttpManager{
             
             return encodedfile;
         }
+  public void decodeBase64BinaryToFile(String encoded,String absolutePath){
+    byte[] bytes = new byte[encoded.getBytes().length];
+    bytes = Base64.getDecoder().decode(encoded);
+    try (FileOutputStream fos = new FileOutputStream(absolutePath)) {
+       fos.write(bytes);
+    } catch(Exception e){println(e);}
+  }
 }
