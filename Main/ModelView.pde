@@ -1,4 +1,5 @@
 public class ModelView{
+  boolean lastCache = false;
   
   ImgLoader imgLoader;
   HttpManager httpManager;
@@ -58,6 +59,10 @@ public class ModelView{
   }
   
   void page(){
+    if(lastCache == false && cache == true) imageCacheON();
+    if(lastCache == true && cache == false) imageCacheOFF();
+    lastCache = cache;
+    
     ready = true;
     background(240,235,196);
     surface.setTitle("BioVit-GPT - Model");
@@ -100,16 +105,26 @@ public class ModelView{
       filenames = new String[0]; //it empties the filenames string
       filenames = loadFilenames(folderPath); //and loads the list of files ending in the selected extension in filenames
       fileindex = 0;
-      images = new PImage[filenames.length];
       
-      for(int i=0;i<filenames.length;i++){ //cache all images in the folder
-        images[i] = loadImage(folderPath+File.separator+filenames[i]);
-      }
-      
-      if(filenames.length>0)
-      imgLoader.changeFrame(images[0]); //loads first cached image on the screen if it exists
+      if(cache)imageCacheON();
+      else imageCacheOFF();
       
     }
+  }
+  
+  void imageCacheON(){
+    images = new PImage[filenames.length];
+      
+    for(int i=0;i<filenames.length;i++){ //cache all images in the folder
+      images[i] = loadImage(folderPath+File.separator+filenames[i]);
+    }
+      
+    if(filenames.length>0)imgLoader.changeFrame(images[0]); //loads first cached image on the screen if it exists
+  }
+  
+  void imageCacheOFF(){
+    images = new PImage[0];
+    if(filenames.length>0)imgLoader.changeFrameNoCache(folderPath+File.separator+filenames[0]);
   }
   
   void upload(String folderPath, String filenames[]){
@@ -127,8 +142,13 @@ public class ModelView{
         
         if(stdResize){ //to have the image resize just change the variable on main and put x,y standard size dimensions
           PImage buffer;
+          
+          if(cache){
           buffer = createImage(images[i].width,images[i].height,RGB);
           buffer = images[i].get();
+          }
+          else buffer = loadImage(folderPath+File.separator+filenames[i]);
+          
           if((buffer.height/(float)stddmy)<(buffer.width/(float)stddmx)){
             buffer.resize(stddmx,0);
           }
@@ -147,7 +167,10 @@ public class ModelView{
           
           
           ShimAWT.saveImage(buffer,folderPath+File.separator+"tmpsave"+File.separator+addzeros+i+".jpg","quality=1"); //lossless jpg save (resized smaller than stdsize mantaining proportions)
-        } else ShimAWT.saveImage(images[i],folderPath+File.separator+"tmpsave"+File.separator+addzeros+i+".jpg","quality=1"); //lossless jpg save (but with original size)
+        } else {
+        if(cache)ShimAWT.saveImage(images[i],folderPath+File.separator+"tmpsave"+File.separator+addzeros+i+".jpg","quality=1"); //lossless jpg save (but with original size)
+        else ShimAWT.saveImage(loadImage(folderPath+File.separator+filenames[i]),folderPath+File.separator+"tmpsave"+File.separator+addzeros+i+".jpg","quality=1");
+        }
       }
       
       tmpDirfilenames = new String[0];
@@ -195,13 +218,18 @@ public class ModelView{
     }
     if(minusButton.isClicked(c) && folderPath != null){
       if(fileindex>0)fileindex--; else fileindex = filenames.length-1;
-      if(filenames.length>0)
-      imgLoader.changeFrame(images[fileindex]);
+      if(filenames.length>0){
+        if(cache)imgLoader.changeFrame(images[fileindex]);
+        else imgLoader.changeFrameNoCache(folderPath+File.separator+filenames[fileindex]);
+      }
     }
     if(plusButton.isClicked(c) && folderPath != null){
       if(fileindex<filenames.length-1)fileindex++; else fileindex = 0;
-      if(filenames.length>0)
-      imgLoader.changeFrame(images[fileindex]);
+      if(filenames.length>0){
+        if(cache)imgLoader.changeFrame(images[fileindex]);
+        else imgLoader.changeFrameNoCache(folderPath+File.separator+filenames[fileindex]);
+      }
+      
     }
     if(copyToClipboardButton.isClicked(c) && loadedString != null){
       StringSelection data = new StringSelection(loadedString);

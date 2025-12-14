@@ -31,6 +31,7 @@ PImage Scan; //placeholder image for imgloader
 PImage Schermo; //not used anymore, leaving it in because i might in the future
 PImage Options; //gear icon for the settings menu
 String extension = ".jpg"; //type of extension chosen, gets changed in the settings menu (def is .jpg)
+boolean cache = false;
 
 boolean stdResize = true;
 int stddmx = 512;

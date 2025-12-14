@@ -75,7 +75,7 @@ public class HttpManager{
       }
     }
     println(parsedResponse);
-    if(parsedResponse.equals(new String("")) || End) return parsedResponse; //we save the parsed string only if it's not empty and if we actually found the ending "
+    if(!parsedResponse.equals(new String("")) && End) return parsedResponse; //we save the parsed string only if it's not empty and if we actually found the ending "
     return (new String("Error: did not find the token in response body"));
   }
   

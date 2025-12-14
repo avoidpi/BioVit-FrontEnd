@@ -16,6 +16,11 @@ public class Settings{
   RectButton extButton2; //.png
   RectButton extButton3; //.tga
   
+  //text and buttons to enable/disable cache
+  TextDisplay cacheText;
+  RectButton cacheButton1;
+  RectButton cacheButton2;
+  
   //not found a reasonable use case for the constructor yet
   Settings(){
   }
@@ -26,6 +31,7 @@ public class Settings{
     anim = height - height/64 - height/18; //starting position of the settings menu is closed
     resText = new TextDisplay(width/30,GREEN,new StringBuffer("RESOLUTION"));
     extText = new TextDisplay(width/30,GREEN,new StringBuffer("EXTENSION"));
+    cacheText = new TextDisplay(width/30,GREEN,new StringBuffer("IMAGE CACHE"));
     
     //set initial position, dimension, colors, border and text of the buttons
     resButton1 = new RectButton(width/8 + width/4 + width/16,height/6+height/24+(int)anim,width/10,height/12,GREEN,DARK,DARKERGREEN,DARKGREEN,buttonbordersize,true);
@@ -42,8 +48,14 @@ public class Settings{
     extButton3 = new RectButton(width/8 + width/4 + width/4 + width/16,height/3+height/24+(int)anim,width/10,height/12,GREEN,DARK,DARKERGREEN,DARKGREEN,buttonbordersize,true);
     extButton3.setText(width/50,GREEN,".tga");
     
+    cacheButton1 = new RectButton(width/8 + width/4 + width/16,height/2+height/24+(int)anim,width/10,height/12,GREEN,DARK,DARKERGREEN,DARKGREEN,buttonbordersize,true);
+    cacheButton1.setText(width/50,GREEN,"OFF");
+    cacheButton2 = new RectButton(width/8 + width/8 + width/4 + width/16,height/2+height/24+(int)anim,width/10,height/12,GREEN,DARK,DARKERGREEN,DARKGREEN,buttonbordersize,true);
+    cacheButton2.setText(width/50,GREEN,"ON");
+    
     resButton1.setSelected(true); //since those are the default settings, we set the variable that show that
     extButton1.setSelected(true);
+    cacheButton1.setSelected(true);
   }
   
   void update(){ //this runs everytime the window gets resized, resizing the dimensions of buttons and text
@@ -60,6 +72,9 @@ public class Settings{
     extButton1.updateDim(width/8 + width/4 + width/16,height/3+height/24+(int)anim,width/10,height/12,buttonbordersize,width/50);
     extButton2.updateDim(width/8 + width/8 + width/4 + width/16,height/3+height/24+(int)anim,width/10,height/12,buttonbordersize,width/50);
     extButton3.updateDim(width/8 + width/4 + width/4 + width/16,height/3+height/24+(int)anim,width/10,height/12,buttonbordersize,width/50);
+    
+    extButton1.updateDim(width/8 + width/4 + width/16,height/2+height/24+(int)anim,width/10,height/12,buttonbordersize,width/50);
+    extButton2.updateDim(width/8 + width/8 + width/4 + width/16,height/2+height/24+(int)anim,width/10,height/12,buttonbordersize,width/50);
   }
   
   void updateAnim(){ //this runs everytime the window gets resized and the animation is moving (open !=0) to fix a small bug with the position of the settings window
@@ -114,8 +129,9 @@ public class Settings{
         
     resText.displayCentered(width/8,height/6+anim,width/8+width/4,height/6+height/6+anim); //"Resolution" text
     extText.displayCentered(width/8,height/3+anim,width/8+width/4,height/6+height/3+anim); //"Extension" text
+    cacheText.displayCentered(width/8,height/2+anim,width/8+width/4,height/6+height/2+anim); //"Cache Images" text
     
-    //buttons for resolutions and extensions
+    //setting buttons
     resButton1.Page(width/8 + width/4 + width/16,height/6+height/24+(int)anim);
     resButton2.Page(width/8 + width/8 + width/4 + width/16,height/6+height/24+(int)anim);
     resButton3.Page(width/8 + width/4 + width/4 + width/16,height/6+height/24+(int)anim);
@@ -123,6 +139,9 @@ public class Settings{
     extButton1.Page(width/8 + width/4 + width/16,height/3+height/24+(int)anim);
     extButton2.Page(width/8 + width/8 + width/4 + width/16,height/3+height/24+(int)anim);
     extButton3.Page(width/8 + width/4 + width/4 + width/16,height/3+height/24+(int)anim);
+    
+    cacheButton1.Page(width/8 + width/4 + width/16,height/2+height/24+(int)anim);
+    cacheButton2.Page(width/8 + width/8 + width/4 + width/16,height/2+height/24+(int)anim);
   }
 
   void click(int px,int py){
@@ -175,6 +194,16 @@ public class Settings{
       extButton1.setSelected(false);
       extButton2.setSelected(false);
       extButton3.setSelected(true);
+    }
+    if(cacheButton1.isClicked(pc)){
+      cache = false;
+      cacheButton1.setSelected(true);
+      cacheButton2.setSelected(false);
+    }
+    if(cacheButton2.isClicked(pc)){
+      cache = true;
+      cacheButton1.setSelected(false);
+      cacheButton2.setSelected(true);
     }
   }
 }

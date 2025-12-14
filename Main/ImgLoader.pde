@@ -26,8 +26,8 @@ public class ImgLoader{
     this.img = img;
   }
   
-  void changeFrameNoCache(String name){ //changes the current image by loading one from a path (either absolute or name of a file inside the data folder)
-    img = loadImage(name); //this is unused because a cache is better for speed while viewing the images
+  void changeFrameNoCache(String path){ //changes the current image by loading one from a path (either absolute or name of a file inside the data folder)
+    img = loadImage(path); //this is unused because a cache is better for speed while viewing the images
   }
   
 }
