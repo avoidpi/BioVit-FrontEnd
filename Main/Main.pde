@@ -1,8 +1,10 @@
-//we're using jdk 25
+import java.net.URL;
+import java.net.HttpURLConnection;
+import java.io.OutputStream;
+import java.io.InputStreamReader;
+import java.io.BufferedReader;
 import java.io.FilenameFilter;
-import java.net.http.*;
-import java.net.URI;
-import java.net.http.HttpRequest.*;
+//import java.net.http.HttpRequest.*;
 import java.time.*;
 import java.nio.file.Paths;
 import javax.json.*;

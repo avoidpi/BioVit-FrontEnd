@@ -3,32 +3,53 @@ public class HttpManager{
   String folderPath;
   String fileList[];
   
-  void sendFileList(String folderPath,String fileList[]){
-    this.folderPath = folderPath;
-    this.fileList = fileList;
-    //String jsonbody = filesToJSON(folderPath,fileList).toString();
-    String jsonbody = filesToJSONCoupled(folderPath,fileList).toString();
-    println("Body size of request: "+jsonbody.getBytes().length);
-    try{
-    HttpClient client = HttpClient.newHttpClient();
-    HttpRequest request = null;
-    
-    request = HttpRequest.newBuilder()
-      .uri(URI.create("https://echo.free.beeceptor.com"))
-      .timeout(Duration.ofMinutes(1))
-      .header("Content-Type", "application/json")
-      .POST(BodyPublishers.ofString(jsonbody)) //sends the json content as a string
-      .build();
-      
-    client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
-      .thenApply(HttpResponse::body)
-      .thenAccept(this::saveString)
-      .join();
+void sendFileList(String folderPath, String fileList[]) {
+  this.folderPath = folderPath;
+  this.fileList = fileList;
+
+  String jsonbody = filesToJSONCoupled(folderPath, fileList).toString();
+  println("Body size of request: " + jsonbody.getBytes().length);
+
+  try {
+    URL url = new URL("https://echo.free.beeceptor.com");
+    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+    conn.setRequestMethod("POST");
+    conn.setDoOutput(true);
+    conn.setConnectTimeout(60000);
+    conn.setReadTimeout(60000);
+    conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+
+    // send body
+    OutputStream os = conn.getOutputStream();
+    os.write(jsonbody.getBytes("UTF-8"));
+    os.flush();
+    os.close();
+
+    // read response
+    BufferedReader in = new BufferedReader(
+      new InputStreamReader(conn.getInputStream())
+    );
+
+    StringBuilder response = new StringBuilder();
+    String line;
+
+    while ((line = in.readLine()) != null) {
+      response.append(line);
     }
-    catch(Exception e){
-      loadedString = new String("Tried sending data but got:\n"+e.toString()+"\nAre you connected to the internet? If not, servers are down.");
-    }
+
+    in.close();
+    conn.disconnect();
+
+    // reuse your existing handler
+    saveString(response.toString());
+
+  } catch (Exception e) {
+    loadedString = "Tried sending data but got:\n"
+      + e.toString()
+      + "\nAre you connected to the internet? If not, servers are down.";
   }
+}
   
   void saveString(String save){
     //loadedString = new String(save);
