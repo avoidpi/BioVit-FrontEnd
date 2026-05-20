@@ -11,7 +11,7 @@ void sendFileList(String folderPath, String fileList[]) {
   println("Body size of request: " + jsonbody.getBytes().length);
 
   try {
-    URL url = new URL("https://echo.free.beeceptor.com");
+    URL url = new URL("https://127.0.0.1:5000");
     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
     conn.setRequestMethod("POST");
@@ -41,7 +41,7 @@ void sendFileList(String folderPath, String fileList[]) {
     in.close();
     conn.disconnect();
 
-    // reuse your existing handler
+    // reuse existing handler
     saveString(response.toString());
 
   } catch (Exception e) {
@@ -57,7 +57,7 @@ void sendFileList(String folderPath, String fileList[]) {
     //String loadedString2 = new String(parseForReport(save,"0000.jpg"));
     //decodeBase64BinaryToFile(loadedString2,folderPath+File.separator+"out.jpg");
     //delay(10000);
-    //println(save);
+    println(save);
   }
 
   String parseForReport(String save,String token){ //manual implementation for parsing of the response body because it's faster than trying to understand a java class to do it and implement it
@@ -170,7 +170,8 @@ void sendFileList(String folderPath, String fileList[]) {
                 byte[] bytes = new byte[(int)file.length()];
                 fileInputStreamReader.read(bytes);
                 fileInputStreamReader.close();
-                encodedfile = Base64.getEncoder().encodeToString(bytes);
+                encodedfile = "bytes of encoded file";
+                //encodedfile = Base64.getEncoder().encodeToString(bytes);
                 //println(encodedfile);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
