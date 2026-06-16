@@ -64,6 +64,7 @@ public class Settings{
     buttonbordersize = width/288;
     resText.updateDim(width/30);
     extText.updateDim(width/30);
+    cacheText.updateDim(width/30);
     
     resButton1.updateDim(width/8 + width/4 + width/16,height/6+height/24+(int)anim,width/10,height/12,buttonbordersize,width/50);
     resButton2.updateDim(width/8 + width/8 + width/4 + width/16,height/6+height/24+(int)anim,width/10,height/12,buttonbordersize,width/50);
@@ -73,8 +74,8 @@ public class Settings{
     extButton2.updateDim(width/8 + width/8 + width/4 + width/16,height/3+height/24+(int)anim,width/10,height/12,buttonbordersize,width/50);
     extButton3.updateDim(width/8 + width/4 + width/4 + width/16,height/3+height/24+(int)anim,width/10,height/12,buttonbordersize,width/50);
     
-    extButton1.updateDim(width/8 + width/4 + width/16,height/2+height/24+(int)anim,width/10,height/12,buttonbordersize,width/50);
-    extButton2.updateDim(width/8 + width/8 + width/4 + width/16,height/2+height/24+(int)anim,width/10,height/12,buttonbordersize,width/50);
+    cacheButton1.updateDim(width/8 + width/4 + width/16,height/2+height/24+(int)anim,width/10,height/12,buttonbordersize,width/50);
+    cacheButton2.updateDim(width/8 + width/8 + width/4 + width/16,height/2+height/24+(int)anim,width/10,height/12,buttonbordersize,width/50);
   }
   
   void updateAnim(){ //this runs everytime the window gets resized and the animation is moving (open !=0) to fix a small bug with the position of the settings window
