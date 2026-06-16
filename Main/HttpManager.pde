@@ -11,7 +11,7 @@ void sendFileList(String folderPath, String fileList[]) {
   println("Body size of request: " + jsonbody.getBytes().length);
 
   try {
-    URL url = new URL("https://127.0.0.1:5000");
+    URL url = new URL("http://127.0.0.1:5000");
     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
     conn.setRequestMethod("POST");
@@ -170,8 +170,8 @@ void sendFileList(String folderPath, String fileList[]) {
                 byte[] bytes = new byte[(int)file.length()];
                 fileInputStreamReader.read(bytes);
                 fileInputStreamReader.close();
-                encodedfile = "bytes of encoded file";
-                //encodedfile = Base64.getEncoder().encodeToString(bytes);
+                //encodedfile = "bytes of encoded file";
+                encodedfile = Base64.getEncoder().encodeToString(bytes);
                 //println(encodedfile);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
